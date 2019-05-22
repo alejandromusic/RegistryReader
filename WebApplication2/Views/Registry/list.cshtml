@@ -1,0 +1,134 @@
+﻿@model IEnumerable<WebApplication2.Models.ProgramModel>
+
+@{
+    ViewBag.Title = "list";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>List</h2>
+
+<form action="/Registry/list">
+
+    <div class="row">
+
+        <div class="col-sm-4">
+            <div class="form-group">
+                <input type="text" name="q" placeholder="String to search" class="form-control" autofocus />
+            </div>
+        </div>
+
+        <div class="col-sm-2">
+
+            <div class="form-group">
+                <div class="radio-inline">
+                    <label for="GUID">
+                        <input id="GUID" type="radio" name="guid" value="true" checked />
+                        GUID
+                    </label>
+                </div>
+
+                <div class="radio-inline">
+                    <label for="Name">
+                        <input id="Name" type="radio" name="guid" value="false" />
+                        Name
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-2">
+            <div class="form-group">
+                <input type="submit" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<table class="table table-hover">
+    <tr>
+        <th>
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.guid)
+            <button class="btn btn-link sortBtn" data-arg="guid"><span class="caret"></span></button>
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.name)
+            <button class="btn btn-link sortBtn" data-arg="name"><span class="caret"></span></button>
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.type)
+            <button class="btn btn-link sortBtn" data-arg="none"><span class="caret"></span></button>
+        </th>
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <button class="copyBtn btn btn-link" data-msg="@Html.DisplayFor(modelItem => item.guid)"><span class="glyphicon glyphicon-copy"></span></button>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.guid)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.type)
+            </td>
+
+        </tr>
+    }
+
+</table>
+
+
+
+@section Scripts {
+<script>
+
+    // copy GUID
+    $(".copyBtn").click(function () {
+
+        $(this).append(`<input id="copyInput" type="text" value="${$(this).data("msg")}">`);
+
+        // get element and select it
+        var copyText = document.getElementById("copyInput");
+        copyText.select();
+
+        // copy it
+        document.execCommand("copy");
+
+        // clean
+        $("#copyInput").remove();
+
+        // notify user
+        alert("Copied the text: " + copyText.value);
+    });
+
+    // sort based on data argument
+    $(".sortBtn").click(function () {
+        redirect( $(this).data("arg") );
+    });
+    
+
+    function redirect(param) {
+        // get the parameters
+        let searchParams = new URLSearchParams(window.location.search);
+
+        let q = searchParams.get('q') == undefined ? "" : searchParams.get('q');
+        let guid = searchParams.get('guid') == undefined ? "" : searchParams.get('guid');
+
+        // redirect
+        var newAddress = `${window.location.pathname}?q=${q}&guid=${guid}&sortBy=${param}`;
+
+        window.location.href = newAddress;
+
+    }
+
+</script>
+}
