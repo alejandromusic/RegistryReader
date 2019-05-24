@@ -19,6 +19,7 @@ namespace WebApplication2.Controllers
         }
     }
 
+
     // compare by guid
     class GUIDComparator : IComparer<ProgramModel>
     {
@@ -30,6 +31,16 @@ namespace WebApplication2.Controllers
 
     public class RegistryController : Controller
     {
+
+        public ActionResult Download()
+        {
+            Response.ContentType = "application/exe";
+            Response.AddHeader("content-disposition", "attachment;filename=download.exe");
+            Response.TransmitFile(Server.MapPath("~/App_Data/ConsoleApp1.exe"));
+            Response.End();
+            return View();
+        }
+
         // GET: Registry
         public ActionResult Index()
         {
